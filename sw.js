@@ -2,7 +2,7 @@
    Handles background polling and push notifications
 */
 
-const CACHE = "f1-2026-v2";
+const CACHE = "f1-2026-v3";
 const POLL_INTERVAL = 10 * 60 * 1000; // 10 minutes
 const API_BASE = "https://api.jolpi.ca/ergast/f1/2026";
 
