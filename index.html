@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#E8002D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="F1 2026">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>F1 2026 // APEX TIMING</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Rajdhani:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   APEX TIMING — F1 2026
+   ═══════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --red:       #E8002D;
+  --red-dim:   #6B0015;
+  --red-glow:  rgba(232, 0, 45, 0.35);
+
+  --bg-0:      #07070C;
+  --bg-1:      #0D0E17;
+  --bg-2:      #141621;
+  --bg-3:      #1B1D2A;
+
+  --line-1:    #1C1E2D;
+  --line-2:    #262839;
+  --line-3:    #343648;
+
+  --text:      #EEEEF5;
+  --text-dim:  #60637A;
+  --muted:     #373A4E;
+
+  --green:     #00D47A;
+  --purple:    #9B30FF;
+  --gold:      #FFC421;
+  --cyan:      #00D4FF;
+  --amber:     #FF8C00;
+
+  --soft:      #FF1E2D;
+  --medium:    #FFE600;
+  --hard:      #E8E8E8;
+
+  --safe-top:  env(safe-area-inset-top);
+  --safe-bot:  env(safe-area-inset-bottom);
+
+  --f-logo:    'Michroma', sans-serif;
+  --f-display: 'Barlow Condensed', sans-serif;
+  --f-body:    'Rajdhani', sans-serif;
+  --f-mono:    'JetBrains Mono', monospace;
+}
+
+html, body {
+  background: var(--bg-0);
+  color: var(--text);
+  font-family: var(--f-body);
+  height: 100%;
+  overflow: hidden;
+  font-feature-settings: "tnum" 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Carbon weave texture */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    repeating-linear-gradient(45deg,  transparent, transparent 5px, rgba(255,255,255,0.009) 5px, rgba(255,255,255,0.009) 10px),
+    repeating-linear-gradient(-45deg, transparent, transparent 5px, rgba(255,255,255,0.009) 5px, rgba(255,255,255,0.009) 10px);
+  background-size: 20px 20px;
+}
+
+/* Top red accent bar */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--red);
+  box-shadow: 0 0 18px var(--red-glow), 0 0 40px rgba(232,0,45,0.15);
+  z-index: 200;
+  pointer-events: none;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bot);
+  position: relative;
+  z-index: 2;
+}
+
+/* ── HEADER ─────────────────────────────────────────────────── */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 16px 10px;
+  background: var(--bg-0);
+  border-bottom: 1px solid var(--line-1);
+  flex-shrink: 0;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle vertical stripe decoration */
+header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 48px,
+    rgba(232, 0, 45, 0.025) 48px,
+    rgba(232, 0, 45, 0.025) 50px
+  );
+  pointer-events: none;
+}
+
+/* Red sweep under logo */
+header::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 140px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--red) 0%, rgba(232,0,45,0.3) 70%, transparent 100%);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  position: relative;
+}
+
+.logo-mark {
+  width: 36px;
+  height: 30px;
+  background: var(--red);
+  clip-path: polygon(0 0, 100% 0, 84% 100%, 0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--f-logo);
+  font-size: 10px;
+  color: #fff;
+  letter-spacing: 0.5px;
+  padding-right: 4px;
+  flex-shrink: 0;
+  box-shadow: 3px 0 14px rgba(232, 0, 45, 0.45);
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-left: 1px solid var(--line-2);
+  padding-left: 11px;
+}
+
+.logo-f1 {
+  font-family: var(--f-logo);
+  font-size: 13px;
+  color: var(--text);
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.logo-sub {
+  font-family: var(--f-mono);
+  font-size: 8px;
+  color: var(--text-dim);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.header-right { display: flex; align-items: center; gap: 8px; }
+
+.icon-btn {
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  color: var(--text-dim);
+  width: 36px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.icon-btn:active { background: var(--bg-3); }
+.icon-btn.active {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(232, 0, 45, 0.08);
+  box-shadow: 0 0 10px rgba(232, 0, 45, 0.15);
+}
+.icon-btn svg { width: 16px; height: 16px; }
+
+.sync-btn {
+  background: var(--red);
+  color: #fff;
+  border: none;
+  padding: 0 20px 0 14px;
+  height: 34px;
+  font-family: var(--f-body);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: background 0.15s, box-shadow 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  text-transform: uppercase;
+  box-shadow: 0 2px 16px rgba(232, 0, 45, 0.35);
+}
+.sync-btn:active { background: #B5001F; box-shadow: none; }
+.sync-btn.syncing {
+  background: var(--line-2);
+  color: var(--text-dim);
+  pointer-events: none;
+  box-shadow: none;
+}
+.sync-btn svg { width: 14px; height: 14px; }
+.sync-btn.syncing svg { animation: spin 1s linear infinite; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── PROGRESS ────────────────────────────────────────────────── */
+.progress-bar { height: 2px; background: var(--bg-1); flex-shrink: 0; overflow: hidden; }
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--red);
+  transition: width 0.3s;
+  box-shadow: 0 0 8px var(--red-glow);
+}
+.progress-bar-fill.indeterminate {
+  width: 35%;
+  animation: slide 1.1s infinite cubic-bezier(0.4, 0, 0.6, 1);
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+}
+@keyframes slide { 0% { transform: translateX(-150%); } 100% { transform: translateX(400%); } }
+
+/* ── STAT STRIP ──────────────────────────────────────────────── */
+.stat-strip {
+  display: flex;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--line-1);
+  flex-shrink: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.stat-strip::-webkit-scrollbar { display: none; }
+
+.stat-card {
+  flex: 1;
+  min-width: 100px;
+  padding: 10px 14px 11px;
+  border-right: 1px solid var(--line-1);
+  position: relative;
+  overflow: hidden;
+}
+.stat-card:last-child { border-right: none; }
+
+/* Bottom accent line */
+.stat-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--red) 0%, transparent 55%);
+  opacity: 0.45;
+}
+
+.stat-lbl {
+  font-family: var(--f-body);
+  font-size: 9px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.stat-val {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--text);
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.5px;
+}
+.stat-val.accent { color: var(--red); }
+.stat-val.gold   { color: var(--gold); }
+.stat-val .unit  {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  margin-left: 3px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+/* ── TAB BAR ─────────────────────────────────────────────────── */
+.tab-bar {
+  display: flex;
+  background: var(--bg-0);
+  border-bottom: 1px solid var(--line-1);
+  flex-shrink: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tab-bar::-webkit-scrollbar { display: none; }
+
+.tab {
+  flex: 1;
+  min-width: 60px;
+  padding: 9px 6px 8px;
+  text-align: center;
+  font-family: var(--f-body);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  cursor: pointer;
+  border-top: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  white-space: nowrap;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.tab svg { width: 15px; height: 15px; opacity: 0.45; transition: opacity 0.15s; }
+.tab.active {
+  color: var(--text);
+  border-top-color: var(--red);
+  background: rgba(232, 0, 45, 0.05);
+}
+.tab.active svg { opacity: 1; color: var(--red); }
+.tab:not(.active):active { background: var(--bg-1); }
+
+/* ── PANELS ──────────────────────────────────────────────────── */
+.panels { flex: 1; overflow: hidden; position: relative; }
+.panel {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: none;
+  padding-bottom: 16px;
+}
+.panel.active { display: block; }
+
+/* ── TABLES ──────────────────────────────────────────────────── */
+.f1-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+.f1-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-1);
+  color: var(--text-dim);
+  font-family: var(--f-body);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--line-2);
+  z-index: 2;
+}
+.f1-table thead th:first-child {
+  border-left: 2px solid var(--red);
+}
+.f1-table thead th.center { text-align: center; }
+.f1-table thead th.right  { text-align: right; }
+
+.f1-table tbody tr {
+  border-bottom: 1px solid var(--line-1);
+  transition: background 0.1s;
+}
+.f1-table tbody tr:active { background: rgba(232, 0, 45, 0.04); }
+
+.f1-table td { padding: 11px 12px; vertical-align: middle; }
+
+/* Position cell */
+.pos-cell {
+  width: 40px;
+  text-align: center;
+  font-family: var(--f-display);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-dim);
+  letter-spacing: -0.5px;
+}
+.pos-cell.p1 { color: var(--gold); }
+.pos-cell.p2 { color: #C8C8D8; }
+.pos-cell.p3 { color: #C08040; }
+
+/* Driver cell with glowing team color bar */
+.driver-cell {
+  position: relative;
+  padding-left: 20px !important;
+}
+.driver-cell::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 26px;
+  background: var(--team-color, var(--muted));
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--team-color, transparent);
+  opacity: 0.85;
+}
+
+.driver-name {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.1;
+  letter-spacing: 0.3px;
+  color: var(--text);
+  text-transform: uppercase;
+}
+.driver-team {
+  font-family: var(--f-body);
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 2px;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.pts-cell {
+  text-align: right;
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--text);
+  white-space: nowrap;
+  letter-spacing: -0.3px;
+}
+.pts-cell .lbl {
+  color: var(--text-dim);
+  font-family: var(--f-mono);
+  font-size: 8px;
+  font-weight: 500;
+  margin-left: 2px;
+  letter-spacing: 0;
+}
+.pts-cell.lead { color: var(--gold); }
+
+.wins-cell {
+  text-align: center;
+  font-family: var(--f-mono);
+  font-weight: 600;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+.wins-cell.has-wins { color: var(--text); }
+
+.dnf { opacity: 0.35; }
+
+.fl-badge {
+  display: inline-block;
+  background: rgba(155, 48, 255, 0.12);
+  border: 1px solid var(--purple);
+  color: var(--purple);
+  padding: 1px 5px;
+  font-family: var(--f-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* ── ROUND NAV ───────────────────────────────────────────────── */
+.round-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line-1);
+  background: var(--bg-1);
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+.round-select {
+  flex: 1;
+  background: var(--bg-2);
+  color: var(--text);
+  border: 1px solid var(--line-2);
+  padding: 8px 10px;
+  font-family: var(--f-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.round-select:focus { outline: none; border-color: var(--red); }
+
+.round-nav {
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  color: var(--text);
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+  font-family: var(--f-display);
+  font-size: 20px;
+  font-weight: 700;
+  transition: all 0.12s;
+}
+.round-nav:active { background: var(--bg-3); border-color: var(--red); color: var(--red); }
+
+/* ── BADGES ──────────────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 3px 8px;
+  font-family: var(--f-body);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border: 1px solid;
+}
+.badge-done    { color: var(--green);  border-color: var(--green);  background: rgba(0,212,122,0.08); }
+.badge-next    { color: var(--red);    border-color: var(--red);    background: rgba(232,0,45,0.1); animation: pulse 1.5s ease-in-out infinite; }
+.badge-sprint  { color: var(--purple); border-color: var(--purple); background: rgba(155,48,255,0.08); }
+.badge-upcoming {
+  color: var(--text-dim);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* ── STATUS BAR ──────────────────────────────────────────────── */
+.status-bar {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  padding: 6px 14px;
+  border-top: 1px solid var(--line-1);
+  background: var(--bg-0);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.status-dot {
+  width: 5px;
+  height: 5px;
+  background: var(--muted);
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+.status-dot.green { background: var(--green); box-shadow: 0 0 7px var(--green); }
+.status-dot.red   { background: var(--red);   box-shadow: 0 0 7px var(--red); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+/* ── TOAST ───────────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: calc(48px + var(--safe-bot));
+  left: 50%;
+  transform: translateX(-50%) translateY(14px);
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  border-left: 3px solid var(--red);
+  color: var(--text);
+  padding: 10px 18px;
+  font-family: var(--f-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  max-width: 320px;
+  width: calc(100vw - 32px);
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 999;
+  pointer-events: none;
+  text-transform: uppercase;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── EMPTY STATE ─────────────────────────────────────────────── */
+.empty {
+  text-align: center;
+  padding: 60px 30px;
+  color: var(--text-dim);
+  font-family: var(--f-body);
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.empty-glyph {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 14px;
+  border: 1px solid var(--line-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--line-3);
+}
+.empty-glyph svg { width: 20px; height: 20px; }
+
+/* ══════════════ STRATEGY TAB ════════════════════════════════ */
+.strategy-panel {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.api-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg-1);
+  border: 1px solid var(--line-1);
+  border-left: 3px solid var(--line-2);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+.api-status.online  { border-left-color: var(--green); color: var(--text); }
+.api-status.offline { border-left-color: var(--red);   color: var(--text); }
+
+.api-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--muted);
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+.api-dot.online  { background: var(--green); box-shadow: 0 0 8px var(--green); }
+.api-dot.offline { background: var(--red);   box-shadow: 0 0 8px var(--red); }
+.api-dot.loading { background: var(--amber); animation: pulse 1s infinite; }
+
+.strategy-form {
+  background: var(--bg-1);
+  border: 1px solid var(--line-1);
+  padding: 16px;
+}
+.form-title {
+  font-family: var(--f-body);
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line-1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+.form-title::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: var(--red);
+  flex-shrink: 0;
+}
+.form-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+.form-label {
+  font-family: var(--f-body);
+  font-size: 9px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+}
+.form-select, .form-input {
+  background: var(--bg-2);
+  color: var(--text);
+  border: 1px solid var(--line-2);
+  padding: 9px 10px;
+  font-family: var(--f-body);
+  font-size: 14px;
+  font-weight: 600;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  transition: border-color 0.15s, background 0.15s;
+}
+.form-select:focus, .form-input:focus {
+  outline: none;
+  border-color: var(--red);
+  background: var(--bg-3);
+}
+
+.analyze-btn {
+  background: var(--red);
+  color: #fff;
+  border: none;
+  padding: 14px;
+  font-family: var(--f-body);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  width: 100%;
+  text-transform: uppercase;
+  transition: background 0.15s, box-shadow 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  margin-top: 6px;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  box-shadow: 0 4px 22px rgba(232, 0, 45, 0.3);
+}
+.analyze-btn:active  { background: #B5001F; box-shadow: none; }
+.analyze-btn:disabled { background: var(--line-2); color: var(--text-dim); pointer-events: none; box-shadow: none; }
+
+/* RECOMMENDATION */
+.recommendation {
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  border-left: 4px solid var(--red);
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+}
+.recommendation::before {
+  content: "";
+  position: absolute;
+  top: 0; right: 0;
+  width: 120px;
+  height: 100%;
+  background: radial-gradient(ellipse at right, rgba(232,0,45,0.1), transparent 70%);
+  pointer-events: none;
+}
+.rec-label {
+  font-family: var(--f-body);
+  font-size: 9px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.rec-answer {
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: -0.3px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.rec-compound { font-size: 28px; font-weight: 900; }
+.rec-compound.SOFT   { color: var(--soft);   text-shadow: 0 0 22px rgba(255,30,45,0.4); }
+.rec-compound.MEDIUM { color: var(--medium); text-shadow: 0 0 22px rgba(255,230,0,0.3); }
+.rec-compound.HARD   { color: var(--hard); }
+.rec-pit {
+  font-family: var(--f-mono);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+  letter-spacing: 0.3px;
+}
+.rec-pit .lap-range { color: var(--red);   font-weight: 800; }
+.rec-pit .hold      { color: var(--green); font-weight: 800; }
+.rec-reasoning {
+  font-family: var(--f-body);
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* DEG CHART */
+.deg-chart-container {
+  background: var(--bg-1);
+  border: 1px solid var(--line-1);
+  padding: 14px;
+}
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line-1);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chart-title {
+  font-family: var(--f-body);
+  font-size: 9px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+.chart-title::before { content: ""; width: 8px; height: 8px; background: var(--red); flex-shrink: 0; }
+.chart-legend {
+  display: flex;
+  gap: 12px;
+  font-family: var(--f-body);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+}
+.legend-item { display: flex; align-items: center; gap: 5px; color: var(--text-dim); text-transform: uppercase; }
+.legend-swatch { width: 12px; height: 2px; }
+.legend-swatch.SOFT   { background: var(--soft); }
+.legend-swatch.MEDIUM { background: var(--medium); }
+.legend-swatch.HARD   { background: var(--hard); }
+
+.deg-chart-svg { width: 100%; display: block; }
+
+/* COMPOUND CARDS */
+.section-label {
+  font-family: var(--f-body);
+  font-size: 9px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  padding-left: 2px;
+  margin-bottom: -4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+.section-label::before { content: "//"; color: var(--muted); font-family: var(--f-mono); }
+
+.compound-cards { display: flex; flex-direction: column; gap: 8px; }
+
+.compound-card {
+  background: var(--bg-1);
+  border: 1px solid var(--line-1);
+  overflow: hidden;
+  position: relative;
+}
+.compound-card.recommended {
+  border-color: rgba(232, 0, 45, 0.45);
+  background: rgba(232, 0, 45, 0.03);
+}
+.compound-card.recommended::after {
+  content: "OPTIMAL";
+  position: absolute;
+  top: 9px; right: 10px;
+  font-family: var(--f-body);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  color: var(--red);
+  z-index: 2;
+  text-transform: uppercase;
+}
+
+.compound-card-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px 10px 14px;
+  border-bottom: 1px solid var(--line-1);
+  gap: 12px;
+  position: relative;
+}
+.compound-card-header::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--compound-color, var(--muted));
+  box-shadow: 2px 0 10px var(--compound-color, transparent);
+  opacity: 0.8;
+}
+
+.compound-pill {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 2.5px;
+  padding: 3px 10px 2px;
+  border: 1px solid;
+}
+.compound-pill.SOFT   { color: var(--soft);   border-color: var(--soft);   background: rgba(255,30,45,0.08); }
+.compound-pill.MEDIUM { color: var(--medium); border-color: var(--medium); background: rgba(255,230,0,0.08); }
+.compound-pill.HARD   { color: var(--hard);   border-color: rgba(232,232,232,0.35); }
+
+.pit-window-badge {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.5px;
+  margin-left: auto;
+  padding-right: 52px;
+}
+.compound-card:not(.recommended) .pit-window-badge { padding-right: 0; }
+.pit-window-badge .lap-range { color: var(--red);   font-weight: 700; }
+.pit-window-badge .hold      { color: var(--green); }
+
+.compound-stats { display: flex; }
+.compound-stat {
+  flex: 1;
+  padding: 10px 8px 12px;
+  border-right: 1px solid var(--line-1);
+  text-align: center;
+}
+.compound-stat:last-child { border-right: none; }
+.compound-stat-lbl {
+  font-family: var(--f-body);
+  font-size: 8px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.compound-stat-val {
+  font-family: var(--f-mono);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+.compound-stat-val .unit { font-size: 10px; color: var(--text-dim); margin-left: 2px; font-weight: 500; }
+.compound-stat-val.good { color: var(--green); }
+.compound-stat-val.warn { color: var(--amber); }
+.compound-stat-val.bad  { color: var(--red); }
+
+.strategy-loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-dim);
+  font-family: var(--f-body);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--line-2);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 14px;
+  box-shadow: 0 0 12px rgba(232, 0, 45, 0.2);
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-1) 25%, var(--bg-2) 50%, var(--bg-1) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+/* ── ENGINEER BRIEFING ───────────────────────────────────── */
+.engineer-briefing {
+  background: var(--bg-1);
+  border: 1px solid var(--line-2);
+  border-left: 3px solid var(--green);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 56px;
+  position: relative;
+  overflow: hidden;
+}
+.engineer-briefing::after {
+  content: "";
+  position: absolute;
+  top: 0; right: 0;
+  width: 80px; height: 100%;
+  background: radial-gradient(ellipse at right, rgba(0,212,122,0.07), transparent 70%);
+  pointer-events: none;
+}
+.briefing-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.briefing-dot {
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--green);
+  flex-shrink: 0;
+}
+.briefing-dot.loading {
+  background: var(--amber);
+  box-shadow: 0 0 8px var(--amber);
+  animation: pulse 1s infinite;
+}
+.briefing-label {
+  font-family: var(--f-body);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  color: var(--green);
+  text-transform: uppercase;
+}
+.briefing-text {
+  font-family: var(--f-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.6;
+}
+.briefing-text.loading-text {
+  color: var(--text-dim);
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+.briefing-unavailable {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+</style>
+</head>
+<body>
+
+<!-- SVG ICON SPRITE -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-sync" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+      <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
+      <path d="M21 3v5h-5"/>
+      <path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+      <path d="M3 21v-5h5"/>
+    </symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
+      <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+      <path d="M10 21a2 2 0 0 0 4 0"/>
+    </symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
+      <path d="M6 3h12v5a6 6 0 0 1-12 0V3z"/>
+      <path d="M6 5H3v2a3 3 0 0 0 3 3"/>
+      <path d="M18 5h3v2a3 3 0 0 1-3 3"/>
+      <path d="M10 14h4v4h-4z"/>
+      <path d="M8 21h8"/>
+    </symbol>
+    <symbol id="i-chassis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
+      <circle cx="6" cy="17" r="2.5"/>
+      <circle cx="18" cy="17" r="2.5"/>
+      <path d="M2 17h1.5M8.5 17h7M20.5 17H22"/>
+      <path d="M4 13l3-5h8l3 5"/>
+      <path d="M9 8V5h6v3"/>
+    </symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
+      <path d="M4 3v18"/>
+      <path d="M4 4h16v10H4z"/>
+      <path d="M8 4v10M12 4v10M16 4v10M4 7h16M4 11h16"/>
+    </symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
+      <rect x="3" y="5" width="18" height="16"/>
+      <path d="M3 10h18"/>
+      <path d="M8 3v4M16 3v4"/>
+      <rect x="7" y="13" width="3" height="3" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-strategy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
+      <circle cx="6" cy="6" r="2"/>
+      <circle cx="18" cy="6" r="2"/>
+      <circle cx="12" cy="12" r="2"/>
+      <circle cx="6" cy="18" r="2"/>
+      <circle cx="18" cy="18" r="2"/>
+      <path d="M8 6h2M14 6h2M7.5 7.5 10.5 10.5M13.5 10.5 16.5 7.5M7.5 16.5 10.5 13.5M13.5 13.5 16.5 16.5"/>
+    </symbol>
+    <symbol id="i-empty" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M8 12h8"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div id="app">
+
+  <header>
+    <div class="logo">
+      <div class="logo-mark">F1</div>
+      <div class="logo-text">
+        <span class="logo-f1">FORMULA</span>
+        <span class="logo-sub">Season 2026</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="icon-btn" id="notifBtn" title="Enable notifications">
+        <svg><use href="#i-bell"/></svg>
+      </button>
+      <button class="sync-btn" id="syncBtn" onclick="syncNow()">
+        <svg id="syncIcon"><use href="#i-sync"/></svg>
+        SYNC
+      </button>
+    </div>
+  </header>
+
+  <div class="progress-bar"><div class="progress-bar-fill" id="progressFill"></div></div>
+
+  <div class="stat-strip" id="statStrip">
+    <div class="stat-card">
+      <div class="stat-lbl">Leader</div>
+      <div class="stat-val" id="statLeader">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Points</div>
+      <div class="stat-val gold" id="statPts">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Rounds</div>
+      <div class="stat-val" id="statRounds">—<span class="unit">/ 24</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Next GP</div>
+      <div class="stat-val accent" id="statNext">—</div>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" data-tab="drivers">
+      <svg><use href="#i-trophy"/></svg>
+      <span>Drivers</span>
+    </div>
+    <div class="tab" data-tab="teams">
+      <svg><use href="#i-chassis"/></svg>
+      <span>Teams</span>
+    </div>
+    <div class="tab" data-tab="results">
+      <svg><use href="#i-flag"/></svg>
+      <span>Results</span>
+    </div>
+    <div class="tab" data-tab="calendar">
+      <svg><use href="#i-cal"/></svg>
+      <span>Calendar</span>
+    </div>
+    <div class="tab" data-tab="strategy">
+      <svg><use href="#i-strategy"/></svg>
+      <span>Strategy</span>
+    </div>
+  </div>
+
+  <div class="panels">
+
+    <div class="panel active" id="panel-drivers">
+      <table class="f1-table" id="driverTable">
+        <thead><tr>
+          <th class="center">Pos</th>
+          <th>Driver</th>
+          <th class="right">Pts</th>
+          <th class="center">W</th>
+        </tr></thead>
+        <tbody id="driverBody"></tbody>
+      </table>
+    </div>
+
+    <div class="panel" id="panel-teams">
+      <table class="f1-table" id="teamTable">
+        <thead><tr>
+          <th class="center">Pos</th>
+          <th>Constructor</th>
+          <th class="right">Pts</th>
+          <th class="center">W</th>
+        </tr></thead>
+        <tbody id="teamBody"></tbody>
+      </table>
+    </div>
+
+    <div class="panel" id="panel-results">
+      <div class="round-bar">
+        <button class="round-nav" id="prevRound">‹</button>
+        <select class="round-select" id="roundSelect"></select>
+        <button class="round-nav" id="nextRound">›</button>
+      </div>
+      <table class="f1-table">
+        <thead><tr>
+          <th class="center">Pos</th>
+          <th>Driver</th>
+          <th class="right">Gap</th>
+          <th class="center">Pts</th>
+        </tr></thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+
+    <div class="panel" id="panel-calendar">
+      <table class="f1-table">
+        <thead><tr>
+          <th class="center">Rnd</th>
+          <th>Grand Prix</th>
+          <th class="right">Date</th>
+        </tr></thead>
+        <tbody id="calendarBody"></tbody>
+      </table>
+    </div>
+
+    <div class="panel" id="panel-strategy">
+      <div class="strategy-panel">
+
+        <div class="api-status" id="apiStatus">
+          <div class="api-dot loading" id="apiDot"></div>
+          <span id="apiStatusText">Connecting to ML API…</span>
+        </div>
+
+        <div class="strategy-form">
+          <div class="form-title">Stint Parameters</div>
+
+          <div class="form-row">
+            <div class="form-group" style="flex: 2">
+              <label class="form-label">Circuit</label>
+              <select class="form-select" id="stratTrack">
+                <option value="">Select circuit…</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Current Lap</label>
+              <input class="form-input" type="number" id="stratCurrentLap" value="1" min="1" max="78">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tyre Age</label>
+              <input class="form-input" type="number" id="stratTyreAge" value="0" min="0" max="40">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Track °C</label>
+              <input class="form-input" type="number" id="stratTrackTemp" value="38" min="15" max="65">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Position</label>
+              <input class="form-input" type="number" id="stratPosition" value="1" min="1" max="20">
+            </div>
+          </div>
+
+          <button class="analyze-btn" id="analyzeBtn" onclick="runStrategy()">
+            Run LSTM Analysis
+          </button>
+        </div>
+
+        <div id="strategyResults"></div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="status-bar">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusText">Loading…</span>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// CONFIG
+const API     = "https://api.jolpi.ca/ergast/f1/2026";
+const SEASON  = 2026;
+const ML_API  = "https://f1-strategy-api-production.up.railway.app";
+
+// TEAM COLORS
+const TEAM_COLORS = {
+  "McLaren": "#FF8000", "Ferrari": "#DC0000", "Mercedes": "#27F4D2",
+  "Red Bull": "#3671C6", "Williams": "#64C4FF", "Aston Martin": "#358C75",
+  "Alpine": "#FF87BC", "Haas": "#B0B0B0", "RB": "#6692FF",
+  "Audi": "#FF2D55", "Cadillac": "#4A90D9",
+};
+function teamColor(name) {
+  for (const [k, v] of Object.entries(TEAM_COLORS))
+    if (name && name.includes(k)) return v;
+  return "#666";
+}
+
+// STATE
+let state = {
+  driverStandings: [], constructorStandings: [],
+  calendar: [], raceResults: {}, currentRound: 1,
+  lastSync: null, syncing: false, notificationsEnabled: false, watchInterval: null,
+  mlApiOnline: false,
+};
+
+// API
+async function apiFetch(path) {
+  const r = await fetch(`${API}/${path}`, { cache: "no-store" });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return (await r.json()).MRData;
+}
+
+// SYNC
+async function syncNow() {
+  if (state.syncing) return;
+  setSyncing(true);
+  setStatus("SYNCING // JOLPICA API", "red");
+  try {
+    await Promise.all([loadDriverStandings(), loadConstructorStandings(), loadCalendar()]);
+    const latestRound = state.calendar.filter(r => r.hasResult).length;
+    if (latestRound > 0) {
+      await loadRaceResults(latestRound);
+      const key = `f1_seen_r${latestRound}`;
+      const wasNew = !localStorage.getItem(key);
+      if (wasNew) {
+        localStorage.setItem(key, "1");
+        const race = state.calendar.find(r => r.round == latestRound);
+        if (race && wasNew && state.lastSync)
+          pushNotification(`🏁 ${race.name} results are in!`, "Tap to see standings & results.");
+      }
+    }
+    updateAllViews();
+    state.lastSync = new Date();
+    const t = state.lastSync.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    setStatus(`SYNCED // ${t}`, "green");
+    showToast("✓ TELEMETRY UPDATED");
+  } catch(e) {
+    setStatus(`SYNC FAILED // ${e.message}`, "");
+    showToast("⚠ CONNECTION LOST");
+  } finally {
+    setSyncing(false);
+  }
+}
+
+async function loadDriverStandings() {
+  const d = await apiFetch(`driverStandings.json`);
+  state.driverStandings = d?.StandingsTable?.StandingsLists?.[0]?.DriverStandings ?? [];
+}
+async function loadConstructorStandings() {
+  const d = await apiFetch(`constructorStandings.json`);
+  state.constructorStandings = d?.StandingsTable?.StandingsLists?.[0]?.ConstructorStandings ?? [];
+}
+async function loadCalendar() {
+  const d = await apiFetch(`races.json?limit=30`);
+  const races = d?.RaceTable?.Races ?? [];
+  const resultsData = await apiFetch(`results.json?limit=50`);
+  const doneRounds = new Set((resultsData?.RaceTable?.Races ?? []).map(r => parseInt(r.round)));
+  state.calendar = races.map(r => ({
+    round: parseInt(r.round), name: r.raceName,
+    circuit: r.Circuit?.circuitName ?? "", country: r.Circuit?.Location?.country ?? "",
+    date: r.date, isSprint: !!r.Sprint, hasResult: doneRounds.has(parseInt(r.round)),
+  }));
+}
+async function loadRaceResults(round) {
+  if (state.raceResults[round]) return;
+  const d = await apiFetch(`${round}/results.json?limit=25`);
+  state.raceResults[round] = (d?.RaceTable?.Races ?? [])[0]?.Results ?? [];
+}
+
+// RENDER
+function updateAllViews() {
+  renderStats(); renderDrivers(); renderTeams();
+  renderCalendar(); renderRoundSelect(); renderResults(state.currentRound);
+}
+
+function renderStats() {
+  const d = state.driverStandings[0];
+  if (d) {
+    document.getElementById("statLeader").textContent = d.Driver.familyName.toUpperCase();
+    document.getElementById("statPts").innerHTML = `${d.points}<span class="unit">PTS</span>`;
+  }
+  const done = state.calendar.filter(r => r.hasResult).length;
+  document.getElementById("statRounds").innerHTML = `${done}<span class="unit">/ ${state.calendar.length || 24}</span>`;
+  const next = state.calendar.find(r => !r.hasResult);
+  if (next) document.getElementById("statNext").textContent = `R${String(next.round).padStart(2,'0')}`;
+}
+
+function renderDrivers() {
+  const body = document.getElementById("driverBody");
+  if (!state.driverStandings.length) {
+    body.innerHTML = emptyRow("No standings yet. Tap SYNC to load data.");
+    return;
+  }
+  body.innerHTML = state.driverStandings.map((s, i) => {
+    const pos = i + 1;
+    const col = teamColor(s.Constructors?.[0]?.name ?? "");
+    const team = s.Constructors?.[0]?.name ?? "";
+    const posClass = pos <= 3 ? `p${pos}` : "";
+    return `<tr>
+      <td class="pos-cell ${posClass}">${String(pos).padStart(2,'0')}</td>
+      <td class="driver-cell" style="--team-color:${col}">
+        <div class="driver-name">${s.Driver.givenName[0]}. ${s.Driver.familyName}</div>
+        <div class="driver-team">${team.toUpperCase()}</div>
+      </td>
+      <td class="pts-cell ${pos === 1 ? 'lead' : ''}">${s.points}<span class="lbl">PTS</span></td>
+      <td class="wins-cell ${parseInt(s.wins) > 0 ? 'has-wins' : ''}">${s.wins}</td>
+    </tr>`;
+  }).join("");
+}
+
+function renderTeams() {
+  const body = document.getElementById("teamBody");
+  if (!state.constructorStandings.length) {
+    body.innerHTML = emptyRow("No constructor data. Tap SYNC.");
+    return;
+  }
+  body.innerHTML = state.constructorStandings.map((s, i) => {
+    const pos = i + 1;
+    const col = teamColor(s.Constructor.name);
+    const posClass = pos <= 3 ? `p${pos}` : "";
+    return `<tr>
+      <td class="pos-cell ${posClass}">${String(pos).padStart(2,'0')}</td>
+      <td class="driver-cell" style="--team-color:${col}">
+        <div class="driver-name" style="color:${col}">${s.Constructor.name}</div>
+      </td>
+      <td class="pts-cell ${pos === 1 ? 'lead' : ''}">${s.points}<span class="lbl">PTS</span></td>
+      <td class="wins-cell ${parseInt(s.wins) > 0 ? 'has-wins' : ''}">${s.wins}</td>
+    </tr>`;
+  }).join("");
+}
+
+function renderCalendar() {
+  const body = document.getElementById("calendarBody");
+  const today = new Date().toISOString().slice(0, 10);
+  body.innerHTML = state.calendar.map(r => {
+    let badge = "";
+    if (r.hasResult) badge = `<span class="badge badge-done">✓ Done</span>`;
+    else if (r.date === today) badge = `<span class="badge badge-next">Live</span>`;
+    else if (r.isSprint) badge = `<span class="badge badge-sprint">Sprint</span>`;
+    else badge = `<span class="badge-upcoming">${r.date}</span>`;
+    return `<tr>
+      <td class="pos-cell">${String(r.round).padStart(2,'0')}</td>
+      <td>
+        <div class="driver-name" style="font-size:13px">${r.name.replace(" Grand Prix","").toUpperCase()}</div>
+        <div class="driver-team">${r.country.toUpperCase()}${r.isSprint ? " • SPRINT" : ""}</div>
+      </td>
+      <td style="text-align:right;vertical-align:middle">${badge}</td>
+    </tr>`;
+  }).join("");
+}
+
+function renderRoundSelect() {
+  const sel = document.getElementById("roundSelect");
+  const prev = sel.value;
+  sel.innerHTML = state.calendar.map(r => {
+    const label = `R${String(r.round).padStart(2,'0')} — ${r.name.replace(" Grand Prix","")}${r.hasResult ? " ✓" : ""}`;
+    return `<option value="${r.round}" ${r.round == prev ? "selected" : ""}>${label}</option>`;
+  }).join("");
+  if (!prev && state.calendar.length) {
+    const done = state.calendar.filter(r => r.hasResult);
+    if (done.length) {
+      sel.value = done[done.length - 1].round;
+      state.currentRound = done[done.length - 1].round;
+    }
+  }
+}
+
+async function renderResults(round) {
+  if (!round) return;
+  const body = document.getElementById("resultsBody");
+  body.innerHTML = `<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text-dim);font-family:var(--f-mono);font-size:11px;letter-spacing:1.5px">LOADING…</td></tr>`;
+  try {
+    await loadRaceResults(round);
+    const results = state.raceResults[round] ?? [];
+    if (!results.length) {
+      body.innerHTML = emptyRow("No results yet for this round.");
+      return;
+    }
+    body.innerHTML = results.map(r => {
+      const pos = parseInt(r.position);
+      const dnf = !["Finished"].includes(r.status) && !r.status.includes("Lap");
+      const col = teamColor(r.Constructor?.name ?? "");
+      const fl  = parseInt(r.FastestLap?.rank) === 1;
+      const gap = pos === 1 ? (r.Time?.time ?? "—")
+        : r.status.includes("Lap") ? r.status
+        : r.Time ? `+${r.Time.time}` : r.status;
+      const posClass = pos <= 3 ? `p${pos}` : "";
+      return `<tr class="${dnf ? "dnf" : ""}">
+        <td class="pos-cell ${posClass}">${String(pos).padStart(2,'0')}</td>
+        <td class="driver-cell" style="--team-color:${col}">
+          <div class="driver-name">
+            ${r.Driver.givenName[0]}. ${r.Driver.familyName}
+            ${fl ? '<span class="fl-badge">FL</span>' : ""}
+          </div>
+          <div class="driver-team">${(r.Constructor?.name ?? "").toUpperCase()}</div>
+        </td>
+        <td style="text-align:right;font-family:var(--f-mono);font-size:11px;color:var(--text-dim);vertical-align:middle;letter-spacing:0.3px">${gap}</td>
+        <td class="pts-cell">${r.points}</td>
+      </tr>`;
+    }).join("");
+  } catch(e) {
+    body.innerHTML = `<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text-dim);font-family:var(--f-mono);font-size:11px">FAILED TO LOAD</td></tr>`;
+  }
+}
+
+function emptyRow(msg) {
+  return `<tr><td colspan="4">
+    <div class="empty">
+      <div class="empty-glyph"><svg><use href="#i-empty"/></svg></div>
+      <div>${msg}</div>
+    </div>
+  </td></tr>`;
+}
+
+// STRATEGY
+
+async function checkMlApi() {
+  const status = document.getElementById("apiStatus");
+  const dot    = document.getElementById("apiDot");
+  const text   = document.getElementById("apiStatusText");
+  status.className = "api-status";
+  dot.className = "api-dot loading";
+  text.textContent = "Connecting to ML API…";
+  try {
+    const r = await fetch(`${ML_API}/health`, { signal: AbortSignal.timeout(5000) });
+    if (r.ok) {
+      status.className = "api-status online";
+      dot.className = "api-dot online";
+      text.textContent = "LSTM Model Ready // Inference Online";
+      state.mlApiOnline = true;
+      await loadStrategyTracks();
+    } else {
+      throw new Error();
+    }
+  } catch {
+    status.className = "api-status offline";
+    dot.className = "api-dot offline";
+    text.textContent = "ML API Offline";
+    state.mlApiOnline = false;
+  }
+}
+
+async function loadStrategyTracks() {
+  try {
+    const r = await fetch(`${ML_API}/tracks`);
+    const data = await r.json();
+    const sel = document.getElementById("stratTrack");
+    sel.innerHTML = `<option value="">Select circuit…</option>` +
+      data.tracks.map(t => `<option value="${t}">${t}</option>`).join("");
+  } catch {}
+}
+
+// Track lap counts — mirrors TRACK_LAPS on the backend
+const TRACK_LAPS = {
+  "Bahrain": 57, "Saudi Arabia": 50, "Australia": 58, "Imola": 63,
+  "Spain": 66, "Monaco": 78, "Canada": 70, "Britain": 52, "Austria": 71,
+  "France": 53, "Hungary": 70, "Belgium": 44, "Italy": 53, "Singapore": 62,
+  "Japan": 53, "Mexico": 71, "Brazil": 71, "Abu Dhabi": 58,
+  "Azerbaijan": 51, "Miami": 57, "Qatar": 57,
+};
+
+async function runStrategy() {
+  if (!state.mlApiOnline) {
+    showToast("⚠ ML API OFFLINE");
+    return;
+  }
+
+  const track      = document.getElementById("stratTrack").value;
+  const currentLap = parseInt(document.getElementById("stratCurrentLap").value);
+  const tyreAge    = parseInt(document.getElementById("stratTyreAge").value);
+  const trackTemp  = parseFloat(document.getElementById("stratTrackTemp").value);
+  const position   = parseInt(document.getElementById("stratPosition").value);
+
+  // Lap count resolved from lookup — no user input needed
+  const raceLaps = TRACK_LAPS[track] ?? 57;
+
+  if (!track) { showToast("SELECT A CIRCUIT"); return; }
+
+  const btn     = document.getElementById("analyzeBtn");
+  const results = document.getElementById("strategyResults");
+  btn.disabled  = true;
+  btn.textContent = "ANALYZING…";
+  results.innerHTML = `<div class="strategy-loading"><div class="spinner"></div><div>Running LSTM Simulation</div></div>`;
+
+  try {
+    const response = await fetch(`${ML_API}/compare`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        track, current_race_lap: currentLap,
+        tyre_age_at_start: tyreAge, track_temp: trackTemp, driver_position: position,
+      }),
+    });
+
+    if (!response.ok) throw new Error(`API ERROR ${response.status}`);
+    const data = await response.json();
+    renderStrategyResults(data, raceLaps, currentLap, trackTemp, position);
+    showToast("✓ ANALYSIS COMPLETE");
+
+    // Fire LLM briefing in background after results render
+    fetchEngineerBriefing(data, raceLaps, currentLap, trackTemp, position);
+
+  } catch (e) {
+    results.innerHTML = `<div class="empty"><div class="empty-glyph"><svg><use href="#i-empty"/></svg></div><div>ANALYSIS FAILED<br><span style="color:var(--muted);font-size:10px">${e.message}</span></div></div>`;
+    showToast("⚠ REQUEST FAILED");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Run LSTM Analysis";
+  }
+}
+
+async function fetchEngineerBriefing(data, raceLaps, currentLap, trackTemp, position) {
+  const briefingEl = document.getElementById("engineerBriefing");
+  if (!briefingEl) return;
+
+  const compounds = ["SOFT", "MEDIUM", "HARD"].map(c => {
+    const cd = data.compounds[c];
+    return {
+      compound:          c,
+      total_degradation: cd.total_degradation,
+      pit_window_start:  cd.pit_window.window_start,
+      pit_window_end:    cd.pit_window.window_end,
+      optimal_lap:       cd.pit_window.optimal_lap,
+      delta_at_lap_10:   cd.stint_data[9]?.predicted_delta ?? null,
+      delta_at_lap_20:   cd.stint_data[19]?.predicted_delta ?? null,
+    };
+  });
+
+  try {
+    const res = await fetch(`${ML_API}/summary`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        track:            data.track,
+        total_race_laps:  raceLaps,
+        current_race_lap: currentLap,
+        track_temp:       trackTemp,
+        driver_position:  position,
+        compounds,
+      }),
+    });
+    if (!res.ok) throw new Error();
+    const summary = await res.json();
+    briefingEl.innerHTML = `
+      <div class="briefing-header">
+        <div class="briefing-dot"></div>
+        <span class="briefing-label">Race Engineer</span>
+      </div>
+      <div class="briefing-text">${summary.briefing}</div>`;
+  } catch {
+    briefingEl.innerHTML = `<div class="briefing-unavailable">Engineer briefing unavailable</div>`;
+  }
+}
+
+// RECOMMENDATION LOGIC
+function pickRecommendation(data) {
+  const compounds = ["SOFT", "MEDIUM", "HARD"];
+  const scored = compounds.map(c => {
+    const cd = data.compounds[c];
+    if (!cd) return null;
+    const pit = cd.pit_window;
+    const optimal = pit.optimal_lap ?? 30;
+    const score = optimal - (cd.total_degradation * 1.5);
+    return { compound: c, score, cd };
+  }).filter(Boolean);
+  scored.sort((a, b) => b.score - a.score);
+  return scored[0];
+}
+
+// DEGRADATION CURVE CHART
+function renderDegChart(data) {
+  const compounds = ["SOFT", "MEDIUM", "HARD"];
+  const colors = { SOFT: "#ff1e2d", MEDIUM: "#ffe600", HARD: "#e5e5e5" };
+
+  const series = {};
+  let maxLap = 0, maxDelta = 0, minDelta = 0;
+
+  compounds.forEach(c => {
+    const cd = data.compounds[c];
+    if (!cd || !cd.stint_data) return;
+    const pts = cd.stint_data.map((d, i) => ({
+      lap: i + 1,
+      delta: d.predicted_delta ?? 0,
+    }));
+    series[c] = pts;
+    pts.forEach(p => {
+      if (p.lap > maxLap) maxLap = p.lap;
+      if (p.delta > maxDelta) maxDelta = p.delta;
+      if (p.delta < minDelta) minDelta = p.delta;
+    });
+  });
+
+  if (!maxLap) return "";
+
+  const W = 340, H = 180;
+  const PAD = { top: 12, right: 14, bottom: 22, left: 36 };
+  const plotW = W - PAD.left - PAD.right;
+  const plotH = H - PAD.top - PAD.bottom;
+
+  const yMax = Math.ceil(maxDelta + 0.5);
+  const yMin = Math.floor(Math.min(minDelta, 0));
+  const yRange = yMax - yMin || 1;
+
+  const xScale = (lap) => PAD.left + ((lap - 1) / Math.max(1, maxLap - 1)) * plotW;
+  const yScale = (d)   => PAD.top + ((yMax - d) / yRange) * plotH;
+
+  const yTicks = 4;
+  let gridLines = "";
+  for (let i = 0; i <= yTicks; i++) {
+    const v = yMin + (yRange * i / yTicks);
+    const y = yScale(v);
+    gridLines += `<line x1="${PAD.left}" y1="${y}" x2="${W - PAD.right}" y2="${y}" stroke="#242430" stroke-width="1" stroke-dasharray="2,3"/>`;
+    gridLines += `<text x="${PAD.left - 6}" y="${y + 3}" text-anchor="end" font-family="JetBrains Mono" font-size="8" fill="#8a8a9a" font-weight="600">${v.toFixed(1)}</text>`;
+  }
+
+  let xTicks = "";
+  const xStep = Math.max(1, Math.ceil(maxLap / 6));
+  for (let lap = 1; lap <= maxLap; lap += xStep) {
+    const x = xScale(lap);
+    xTicks += `<text x="${x}" y="${H - 6}" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#8a8a9a" font-weight="600">L${lap}</text>`;
+  }
+
+  const zeroY = yScale(0);
+  const zeroLine = `<line x1="${PAD.left}" y1="${zeroY}" x2="${W - PAD.right}" y2="${zeroY}" stroke="#4a4a5e" stroke-width="1"/>`;
+
+  let paths = "";
+  let pitMarkers = "";
+
+  compounds.forEach(c => {
+    const pts = series[c];
+    if (!pts || !pts.length) return;
+    const color = colors[c];
+    const d = pts.map((p, i) => {
+      const x = xScale(p.lap).toFixed(1);
+      const y = yScale(p.delta).toFixed(1);
+      return `${i === 0 ? 'M' : 'L'}${x},${y}`;
+    }).join(" ");
+
+    paths += `<path d="${d}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.95"/>`;
+
+    const cd = data.compounds[c];
+    if (cd?.pit_window?.optimal_lap) {
+      const pitLap = cd.pit_window.optimal_lap;
+      const pitPt = pts.find(p => p.lap === pitLap);
+      if (pitPt) {
+        const x = xScale(pitPt.lap);
+        const y = yScale(pitPt.delta);
+        pitMarkers += `
+          <circle cx="${x}" cy="${y}" r="5" fill="${color}" stroke="#0c0c0e" stroke-width="2"/>
+          <circle cx="${x}" cy="${y}" r="9" fill="none" stroke="${color}" stroke-width="1" opacity="0.4"/>
+        `;
+      }
+    }
+  });
+
+  const yLabel = `<text x="8" y="${PAD.top + plotH/2}" font-family="JetBrains Mono" font-size="8" fill="#8a8a9a" font-weight="600" text-anchor="middle" transform="rotate(-90, 8, ${PAD.top + plotH/2})" letter-spacing="1">DELTA (s)</text>`;
+
+  const svg = `
+    <svg class="deg-chart-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      ${gridLines}
+      ${zeroLine}
+      ${xTicks}
+      ${yLabel}
+      ${paths}
+      ${pitMarkers}
+    </svg>
+  `;
+
+  return `
+    <div class="deg-chart-container">
+      <div class="chart-header">
+        <div class="chart-title">Predicted Degradation</div>
+        <div class="chart-legend">
+          <div class="legend-item"><div class="legend-swatch SOFT"></div>Soft</div>
+          <div class="legend-item"><div class="legend-swatch MEDIUM"></div>Medium</div>
+          <div class="legend-item"><div class="legend-swatch HARD"></div>Hard</div>
+        </div>
+      </div>
+      ${svg}
+    </div>
+  `;
+}
+
+function renderStrategyResults(data, raceLaps, currentLap, trackTemp, position) {
+  const results = document.getElementById("strategyResults");
+  const compounds = ["SOFT", "MEDIUM", "HARD"];
+  const compoundColors = { SOFT: "#ff1e2d", MEDIUM: "#ffe600", HARD: "#e5e5e5" };
+
+  const rec = pickRecommendation(data);
+  const recPit = rec.cd.pit_window;
+  const recText = recPit.optimal_lap
+    ? `PIT <span class="lap-range">L${recPit.window_start}–${recPit.window_end}</span>`
+    : `<span class="hold">HOLD STINT</span>`;
+
+  const reasoning = recPit.optimal_lap
+    ? `Model projects ${rec.cd.total_degradation.toFixed(2)}s total degradation. Optimal pit window opens at lap ${recPit.optimal_lap}.`
+    : `Tires managing ${rec.cd.total_degradation.toFixed(2)}s degradation — stint can continue.`;
+
+  const chart = renderDegChart(data);
+
+  const cards = compounds.map(compound => {
+    const cd  = data.compounds[compound];
+    if (!cd) return "";
+    const pit = cd.pit_window;
+    const deltas = cd.stint_data.map(d => d.predicted_delta);
+    const lat10  = deltas[9]  ?? null;
+    const lat20  = deltas[19] ?? null;
+    const color  = compoundColors[compound];
+    const isRec  = compound === rec.compound;
+
+    const deltaClass = (v) => v === null ? "" : Math.abs(v) < 0.5 ? "good" : Math.abs(v) < 1.5 ? "warn" : "bad";
+    const fmtDelta = (v) => v === null ? "—" : `${v >= 0 ? '+' : ''}${v.toFixed(2)}`;
+
+    const pitText = pit.optimal_lap
+      ? `PIT <span class="lap-range">L${pit.window_start}–${pit.window_end}</span>`
+      : `<span class="hold">HOLD</span>`;
+
+    return `
+      <div class="compound-card ${isRec ? 'recommended' : ''}" style="--compound-color:${color}">
+        <div class="compound-card-header">
+          <div class="compound-pill ${compound}">${compound}</div>
+          <div class="pit-window-badge">${pitText}</div>
+        </div>
+        <div class="compound-stats">
+          <div class="compound-stat">
+            <div class="compound-stat-lbl">Δ Lap 10</div>
+            <div class="compound-stat-val ${deltaClass(lat10)}">${fmtDelta(lat10)}<span class="unit">s</span></div>
+          </div>
+          <div class="compound-stat">
+            <div class="compound-stat-lbl">Δ Lap 20</div>
+            <div class="compound-stat-val ${deltaClass(lat20)}">${fmtDelta(lat20)}<span class="unit">s</span></div>
+          </div>
+          <div class="compound-stat">
+            <div class="compound-stat-lbl">Total Deg</div>
+            <div class="compound-stat-val ${deltaClass(cd.total_degradation)}">${cd.total_degradation.toFixed(2)}<span class="unit">s</span></div>
+          </div>
+        </div>
+      </div>`;
+  }).join("");
+
+  const lapsLeft = (raceLaps ?? 57) - (currentLap ?? 1);
+  results.innerHTML = `
+    <div class="engineer-briefing" id="engineerBriefing">
+      <div class="briefing-header">
+        <div class="briefing-dot loading"></div>
+        <span class="briefing-label">Race Engineer</span>
+      </div>
+      <div class="briefing-text loading-text">Computing strategy briefing…</div>
+    </div>
+    <div class="recommendation">
+      <div class="rec-label">Optimal Strategy // ${data.track} // ${lapsLeft} laps remaining</div>
+      <div class="rec-answer">
+        <span class="rec-compound ${rec.compound}">${rec.compound}</span>
+        <span class="rec-pit">${recText}</span>
+      </div>
+      <div class="rec-reasoning">${reasoning}</div>
+    </div>
+    ${chart}
+    <div class="section-label">Compound Breakdown</div>
+    <div class="compound-cards">${cards}</div>
+  `;
+}
+
+// TABS
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    tab.classList.add("active");
+    document.getElementById(`panel-${tab.dataset.tab}`).classList.add("active");
+    if (tab.dataset.tab === "strategy" && !state.mlApiOnline) {
+      checkMlApi();
+    }
+  });
+});
+
+// ROUND NAV
+document.getElementById("roundSelect").addEventListener("change", e => {
+  state.currentRound = parseInt(e.target.value);
+  renderResults(state.currentRound);
+});
+document.getElementById("prevRound").addEventListener("click", () => {
+  const sel = document.getElementById("roundSelect");
+  const idx = sel.selectedIndex;
+  if (idx > 0) { sel.selectedIndex = idx - 1; sel.dispatchEvent(new Event("change")); }
+});
+document.getElementById("nextRound").addEventListener("click", () => {
+  const sel = document.getElementById("roundSelect");
+  const idx = sel.selectedIndex;
+  if (idx < sel.options.length - 1) { sel.selectedIndex = idx + 1; sel.dispatchEvent(new Event("change")); }
+});
+
+// UI HELPERS
+function setSyncing(v) {
+  state.syncing = v;
+  const btn  = document.getElementById("syncBtn");
+  const fill = document.getElementById("progressFill");
+  btn.classList.toggle("syncing", v);
+  fill.classList.toggle("indeterminate", v);
+}
+function setStatus(msg, dot) {
+  document.getElementById("statusText").textContent = msg;
+  const d = document.getElementById("statusDot");
+  d.className = "status-dot" + (dot ? " " + dot : "");
+}
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2800);
+}
+
+// NOTIFICATIONS
+async function requestNotifications() {
+  if (!("Notification" in window)) { showToast("NOTIFICATIONS UNAVAILABLE"); return; }
+  const perm = await Notification.requestPermission();
+  state.notificationsEnabled = perm === "granted";
+  document.getElementById("notifBtn").classList.toggle("active", state.notificationsEnabled);
+  if (state.notificationsEnabled) { showToast("🔔 ALERTS ONLINE"); startWatchMode(); }
+  else showToast("NOTIFICATIONS BLOCKED");
+}
+function pushNotification(title, body) {
+  if (!state.notificationsEnabled) return;
+  try { new Notification(title, { body, icon: "./icon-192.png" }); } catch {}
+}
+document.getElementById("notifBtn").addEventListener("click", async () => {
+  if (state.notificationsEnabled) {
+    stopWatchMode(); state.notificationsEnabled = false;
+    document.getElementById("notifBtn").classList.remove("active");
+    showToast("🔕 ALERTS OFFLINE");
+  } else { await requestNotifications(); }
+});
+function startWatchMode() {
+  if (state.watchInterval) return;
+  state.watchInterval = setInterval(syncNow, 10 * 60 * 1000);
+  setStatus("WATCH MODE // 10 MIN INTERVAL", "green");
+}
+function stopWatchMode() { clearInterval(state.watchInterval); state.watchInterval = null; }
+
+// SERVICE WORKER
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js").then(reg => {
+    if ("periodicSync" in reg) {
+      navigator.permissions.query({ name: "periodic-background-sync" }).then(status => {
+        if (status.state === "granted")
+          reg.periodicSync.register("f1-sync", { minInterval: 10 * 60 * 1000 });
+      });
+    }
+  });
+  navigator.serviceWorker.addEventListener("message", e => {
+    if (e.data?.type === "OPEN_ROUND") {
+      const rnd = e.data.round;
+      state.currentRound = rnd;
+      document.querySelector("[data-tab='results']").click();
+      renderResults(rnd);
+    }
+  });
+}
+if ("Notification" in window && Notification.permission === "granted") {
+  state.notificationsEnabled = true;
+  document.getElementById("notifBtn").classList.add("active");
+  startWatchMode();
+}
+
+// BOOT
+(async () => {
+  setStatus("INITIALIZING…", "red");
+  await syncNow();
+  if (!window.matchMedia("(display-mode: standalone)").matches) {
+    setTimeout(() => showToast("💡 ADD TO HOME SCREEN"), 3500);
+  }
+})();
+</script>
+</body>
+</html>
